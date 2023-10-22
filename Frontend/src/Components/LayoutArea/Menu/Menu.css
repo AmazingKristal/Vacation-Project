@@ -1,0 +1,19 @@
+.links-box {
+    display:flex;
+    margin-left: 40px;
+    gap:20px;
+}
+
+.Menu {
+    height: 120px;
+    line-height: 40px;
+    width:auto;
+    color: white;
+}
+
+.auth-box {
+    display: flex;
+    margin-right: 40px;
+}
+
+

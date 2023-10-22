@@ -1,0 +1,106 @@
+.VacationsCard {
+    width: 400px;
+    display: inline-flex;
+    margin: 10px;
+    padding: 10px;
+    border: 1px solid black;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px;
+    text-align: left;
+}
+
+
+.card-div {
+    width: 18rem;
+    height:450px;
+    display:flex;
+    flex:1;
+}
+
+.description-container {
+    scroll-behavior: smooth;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: 200px;
+    margin:5px;
+}
+
+.destination-div {
+    display:flex;
+    justify-content: center;
+}
+
+.destination-span {
+    position: absolute;
+    top:5px;
+    color:rgb(0, 0, 0);
+    font-size:larger;
+    font-weight: bolder;
+}
+
+.date-span {
+    color:rgb(0, 0, 0);
+    font-size:larger;
+    font-weight: bolder;
+    position:absolute;
+    bottom:40px;
+}
+.button-div {
+    width:236px;
+}
+
+.price-button {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: bolder;
+    border: none;
+    padding-top:5px;
+    padding-bottom:5px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+    position: absolute;
+    bottom:0px;
+    width: 100%;
+}
+
+.price-button:hover {
+    background-color: #0056b3;
+}
+
+img {
+    max-height: 150px;
+}
+
+/* Base Styles for Edit and Update Buttons */
+.delete-button, .update-button {
+    display: inline-block;
+    padding: 5px 15px;
+    font-size: 16px;
+    background-color: #606060; /* Grey background color */
+    color: #fff; /* White text color */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s, transform 0.3s;
+  }
+
+  .delete-button {
+    position: absolute;
+    padding-right:15px;
+    padding-left:15px;
+    top:116px;
+  }
+
+  .update-button {
+    position: absolute;
+    right:0px;
+    top:116px;
+  } 
+  
+  /* Hover Effect - Transform to Blue */
+  .delete-button:hover, .update-button:hover {
+    background-color: #3498db; /* Blue background color on hover */
+    color: #fff; /* White text color on hover */
+    transform: scale(1.05);
+  }

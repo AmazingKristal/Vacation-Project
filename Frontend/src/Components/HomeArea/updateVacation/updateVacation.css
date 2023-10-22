@@ -1,0 +1,108 @@
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.description-div > input {
+    height:100px;
+    
+}
+
+/* Styles for the form container */
+form {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    display:flex;
+    flex-direction: column;
+}
+
+/* Styles for labels */
+label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+    text-align: center;
+}
+
+/* Styles for text inputs and textareas */
+input[type="text"],
+input[type="date"],
+input[type="number"],
+input[type="textarea"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+/* Style for the file input container */
+.label-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+/* Styles for the file input and preview */
+.file-label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.fileInput {
+    display: none;
+}
+
+.file-preview {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 2px dashed #ccc;
+    padding: 20px;
+    text-align: center;
+    transition: border 0.3s ease;
+}
+
+.file-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    display: none;
+}
+
+.fileInput:focus + .file-preview {
+    border-color: #007bff;
+}
+
+.fileInput:valid + .file-preview img {
+    display: block;
+}
+
+.fileInput:valid + .file-preview p {
+    display: none;
+}
+
+/* Style for the submit button */
+.updateVacation button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.updateVacation button:hover {
+    background-color: #0056b3;
+}
