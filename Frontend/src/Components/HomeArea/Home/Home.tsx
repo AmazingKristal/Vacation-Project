@@ -65,6 +65,28 @@ function Home(): JSX.Element {
     }
   }
 
+  function didntStartYet(checkbox: React.ChangeEvent<HTMLInputElement>) {
+    let now = new Date().toISOString();
+    if (checkbox.target.checked) {
+      setDidntStartCheckbox(true);
+      setFilteredVacations(vacations.filter((v) => v.startDate > now));
+    } else {
+      setDidntStartCheckbox(false);
+    }
+  }
+
+  function onGoing(checkbox: React.ChangeEvent<HTMLInputElement>) {
+    let now = new Date().toISOString();
+    if (checkbox.target.checked) {
+      setOngoingCheckbox(true);
+      setFilteredVacations(
+        vacations.filter((v) => v.startDate <= now && v.endDate >= now)
+      );
+    } else {
+      setOngoingCheckbox(false);
+    }
+  }
+
   const itemsPerPage = 9; // Number of items to display per page
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -92,10 +114,10 @@ function Home(): JSX.Element {
       <input type="checkbox" id="following-checkbox" className="following-checkbox" onChange={showFollowedVac}></input>
 
       <label htmlFor="didntstart-checkbox">filter by didnt start yet</label>
-      <input type="checkbox" id="didntstart-checkbox" className="didntstart-checkbox"></input>
+      <input type="checkbox" id="didntstart-checkbox" className="didntstart-checkbox" onChange={didntStartYet}></input>
 
       <label htmlFor="ongoing-checkbox">filter by going on</label>
-      <input type="checkbox" id="ongoing-checkbox" className="ongoing-checkbox"></input>
+      <input type="checkbox" id="ongoing-checkbox" className="ongoing-checkbox" onChange={onGoing}></input>
       </div>}
 
 
@@ -107,8 +129,8 @@ function Home(): JSX.Element {
         </div>}
         <div className="card-box">
 
-      {(user?.role === 1 || user?.role === 2) && (followCheckbox ? 
-      ((filteredVacations.length === 0) ? <span>No vacations followed !</span> : filteredVacations.map((v) => (
+      {(user?.role === 1 || user?.role === 2) && (followCheckbox || didntStartCheckbox || ongoingCheckbox ? 
+      ((filteredVacations.length === 0) ? <span>No vacations found!</span> : filteredVacations.map((v) => (
         <VacationsCard
           key={v.vacationId}
           vacation={v}

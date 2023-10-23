@@ -23,7 +23,7 @@ function Menu(): JSX.Element {
             <li className="nav-item">
               <NavLink to="/home" className="nav-link" aria-current="page">Home</NavLink>
             </li>
-            {(user?.role === 1 || user?.role === 2) &&  <li className="nav-item">
+            {(user?.role === 1) &&  <li className="nav-item">
             <NavLink to="/list" className="nav-link">List</NavLink>
             </li>}
             {(user?.role === 1) && <li className="nav-item">
