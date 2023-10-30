@@ -15,11 +15,13 @@ function Home(): JSX.Element {
 
   let [vacations, setVacations] = useState<VacationsModel[]>([]);
   let [user, setUser] = useState<UserModel>();
-  let [followers, setFollowers] = useState<FollowersModel[]>();
+  let [followers, setFollowers] = useState<FollowersModel[]>([]);
   let [filteredVacations, setFilteredVacations] = useState<VacationsModel[]>([]);
   let [followCheckbox, setFollowCheckbox] = useState(false);
-  let [didntStartCheckbox, setdidntStartCheckbox] = useState(false);
+  let [didntStartCheckbox, setDidntStartCheckbox] = useState(false);
   let [ongoingCheckbox, setOngoingCheckbox] = useState(false);
+  let [deleteModal, setDeleteModal] = useState(false);
+  let [specificVacId, setSpecificVacId] = useState(0);
 
   useEffect(() => {
     dataService
@@ -41,20 +43,34 @@ function Home(): JSX.Element {
 }, []);
 
 // Delete vacation
-  async function deleteVacation(vacationId: number): Promise<void> {
+  async function deleteVacation(): Promise<void> {
     try {
-      await dataService.deleteVacation(vacationId);
+      await dataService.deleteVacation(specificVacId);
       notifyService.success("Vacation has been deleted successfully !");
-      setVacations(vacations.filter(v => v.vacationId !== vacationId));
+      setVacations(vacations.filter(v => v.vacationId !== specificVacId));
+      closeModal();
     } catch (err: any) {
       notifyService.error(err);
     }
+  }
+
+  // closes the modal
+  function closeModal() {
+    setDeleteModal(false);
+  }
+
+  // function to open the modal and to get us the vacationId we need to delete it later if we need.
+  function openModal(vacationId: number) {
+    setDeleteModal(true);
+    setSpecificVacId(vacationId);
   }
 
   // show the followed vacations after the checkbox tick
   function showFollowedVac(checkbox: React.ChangeEvent<HTMLInputElement>) {
     if (checkbox.target.checked) {
       setFollowCheckbox(true);
+      setDidntStartCheckbox(false);
+      setOngoingCheckbox(false);
       let filteredFollowers = followers.filter(f => f.userId === user.userId);
       console.log(filteredFollowers);
       console.log(followers);
@@ -69,6 +85,8 @@ function Home(): JSX.Element {
     let now = new Date().toISOString();
     if (checkbox.target.checked) {
       setDidntStartCheckbox(true);
+      setFollowCheckbox(false);
+      setOngoingCheckbox(false);
       setFilteredVacations(vacations.filter((v) => v.startDate > now));
     } else {
       setDidntStartCheckbox(false);
@@ -79,6 +97,8 @@ function Home(): JSX.Element {
     let now = new Date().toISOString();
     if (checkbox.target.checked) {
       setOngoingCheckbox(true);
+      setFollowCheckbox(false);
+      setDidntStartCheckbox(false);
       setFilteredVacations(
         vacations.filter((v) => v.startDate <= now && v.endDate >= now)
       );
@@ -111,13 +131,13 @@ function Home(): JSX.Element {
       <h2>Welcome to the vacation site !</h2>
       {(user?.role === 2) && <div className="checkbox-div">
       <label htmlFor="following-checkbox">filter by following</label>
-      <input type="checkbox" id="following-checkbox" className="following-checkbox" onChange={showFollowedVac}></input>
+      <input name="checkboxGroup" checked={followCheckbox} type="checkbox" id="following-checkbox" className="following-checkbox" onChange={showFollowedVac}></input>
 
       <label htmlFor="didntstart-checkbox">filter by didnt start yet</label>
-      <input type="checkbox" id="didntstart-checkbox" className="didntstart-checkbox" onChange={didntStartYet}></input>
+      <input name="checkboxGroup" checked={didntStartCheckbox} type="checkbox" id="didntstart-checkbox" className="didntstart-checkbox" onChange={didntStartYet}></input>
 
       <label htmlFor="ongoing-checkbox">filter by going on</label>
-      <input type="checkbox" id="ongoing-checkbox" className="ongoing-checkbox" onChange={onGoing}></input>
+      <input name="checkboxGroup" checked={ongoingCheckbox} type="checkbox" id="ongoing-checkbox" className="ongoing-checkbox" onChange={onGoing}></input>
       </div>}
 
 
@@ -134,7 +154,7 @@ function Home(): JSX.Element {
         <VacationsCard
           key={v.vacationId}
           vacation={v}
-          delete={deleteVacation}
+          delete={openModal}
         ></VacationsCard>
         )))
         :
@@ -142,9 +162,29 @@ function Home(): JSX.Element {
           <VacationsCard
             key={v.vacationId}
             vacation={v}
-            delete={deleteVacation}
+            delete={openModal}
           ></VacationsCard>
         ))
+      )}
+
+      {deleteModal && (
+        <div className="modal" tabIndex={-1} role="dialog" style={{display: "block"}}>
+        <div className="modal-dialog">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Delete</h5>
+              <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close" onClick={closeModal}></button>
+            </div>
+            <div className="modal-body">
+              <p>Are you sure you want to delete ?</p>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={closeModal}>Close</button>
+              <button type="button" className="btn btn-primary" onClick={deleteVacation}>Delete</button>
+            </div>
+          </div>
+        </div>
+      </div>
       )}
 
       {/* {(user?.role === 1 || user?.role === 2) && displayedVacations.map((v) => (

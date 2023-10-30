@@ -37,7 +37,7 @@ export function VacationsReducer(currentState = new VacationsState(), action: Va
             newState.vacations.push(action.payload); // Add that Vacation into global state.
             break;
         case VacationsActionType.UpdateVacation: // Here the payload is a single Vacation to update.
-            let indexToUpdate = newState.vacations.findIndex(v => v.vacationId == action.payload.vacationId);
+            let indexToUpdate = newState.vacations.findIndex(v => v.vacationId === action.payload.vacationId);
             console.log(indexToUpdate);
             if(indexToUpdate >= 0) newState.vacations[indexToUpdate] = action.payload;
             break;
