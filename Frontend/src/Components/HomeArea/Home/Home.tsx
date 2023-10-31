@@ -129,15 +129,25 @@ function Home(): JSX.Element {
   return (
     <div className="Home">
       <h2>Welcome to the vacation site !</h2>
+
+
       {(user?.role === 2) && <div className="checkbox-div">
-      <label htmlFor="following-checkbox">filter by following</label>
-      <input name="checkboxGroup" checked={followCheckbox} type="checkbox" id="following-checkbox" className="following-checkbox" onChange={showFollowedVac}></input>
 
-      <label htmlFor="didntstart-checkbox">filter by didnt start yet</label>
-      <input name="checkboxGroup" checked={didntStartCheckbox} type="checkbox" id="didntstart-checkbox" className="didntstart-checkbox" onChange={didntStartYet}></input>
+      <div className="form-check form-switch">
+      <input className="form-check-input" type="checkbox" role="switch" id="followCheckBox" checked={followCheckbox} onChange={showFollowedVac}></input>
+      <label className="form-check-label" htmlFor="followCheckBox">Show following</label>
+      </div>
 
-      <label htmlFor="ongoing-checkbox">filter by going on</label>
-      <input name="checkboxGroup" checked={ongoingCheckbox} type="checkbox" id="ongoing-checkbox" className="ongoing-checkbox" onChange={onGoing}></input>
+      <div className="form-check form-switch">
+      <input className="form-check-input" type="checkbox" role="switch" id="didntStartCheckBox" checked={didntStartCheckbox} onChange={didntStartYet}></input>
+      <label className="form-check-label" htmlFor="didntStartCheckBox">Show future vacations</label>
+      </div>
+
+      <div className="form-check form-switch">
+      <input className="form-check-input" type="checkbox" role="switch" id="onChangeCheckBox" checked={ongoingCheckbox} onChange={onGoing}></input>
+      <label className="form-check-label" htmlFor="onChangeCheckBox">Show ongoing vacations</label>
+      </div>
+
       </div>}
 
 
@@ -147,6 +157,8 @@ function Home(): JSX.Element {
           <br/>
           <NavLink to="/login" className="btn btn-outline-primary">Login</NavLink>
         </div>}
+
+        
         <div className="card-box">
 
       {(user?.role === 1 || user?.role === 2) && (followCheckbox || didntStartCheckbox || ongoingCheckbox ? 
@@ -157,7 +169,7 @@ function Home(): JSX.Element {
           delete={openModal}
         ></VacationsCard>
         )))
-        :
+        : 
         displayedVacations.map((v) => (
           <VacationsCard
             key={v.vacationId}
@@ -186,14 +198,6 @@ function Home(): JSX.Element {
         </div>
       </div>
       )}
-
-      {/* {(user?.role === 1 || user?.role === 2) && displayedVacations.map((v) => (
-        <VacationsCard
-          key={v.vacationId}
-          vacation={v}
-          delete={deleteVacation}
-        ></VacationsCard>
-      ))} */}
       </div>
 
       {(user?.role === 1 || user?.role === 2) && <div className="page-div">

@@ -15,3 +15,9 @@
     margin-left: 215px;
     margin-right: 215px;
 }
+
+.checkbox-div {
+    display:flex;
+    align-items: center;
+    flex-direction: column;
+}
