@@ -7,6 +7,8 @@ import { authStore } from "../../../../Redux/AuthState";
 import followersService from "../../../../Services/FollowersService";
 import FollowersModel from "../../../../Models/FollowersModel";
 import notifyService from "../../../../Services/NotifyService";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart } from '@fortawesome/free-solid-svg-icons';
 
 interface VacationsCardProps {
 	vacation: VacationsModel;
@@ -17,6 +19,7 @@ function VacationsCard(props: VacationsCardProps): JSX.Element {
 
     let [user, setUser] = useState<UserModel>();
     let [followers, setFollowers] = useState<FollowersModel[]>();
+    let [showHearts, setShowHearts] = useState(false);
     let navigate =  useNavigate();
 
     useEffect(() => {
@@ -30,6 +33,8 @@ function VacationsCard(props: VacationsCardProps): JSX.Element {
         let unsubscribe = authStore.subscribe(() => setUser(authStore.getState().user));
         return unsubscribe;
     }, []);
+
+    
 
     function deleteMe() {
         props.delete(props.vacation.vacationId);
@@ -67,8 +72,12 @@ function VacationsCard(props: VacationsCardProps): JSX.Element {
             <div>
                 {user?.role === 1 && <button onClick={deleteMe} className="delete-button">Delete</button>}
                 {user?.role === 1 && <button onClick={updateMe} className="update-button">Update</button>}
-                {user?.role === 2 && <button onClick={followMe}>Follow ♥</button>}
-                {user?.role === 2 && <span> Followers ! {followers?.length}</span>}
+                {user?.role === 2 &&
+                    <button onClick={followMe} className="follow-button">
+                <FontAwesomeIcon icon={faHeart} className="heart-icon" />
+                <span className="followers-count">{followers?.length}</span>
+                </button>
+                }
             </div>
                 <img src={props.vacation.imageUrl}></img>
                 <div>
