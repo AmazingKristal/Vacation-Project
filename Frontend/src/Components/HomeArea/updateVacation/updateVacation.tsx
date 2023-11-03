@@ -8,17 +8,26 @@ import { useEffect, useState } from "react";
 
 
 function UpdateVacation(): JSX.Element {
-  let [vacation, setVacation] = useState<VacationsModel>();
-  let { register, handleSubmit, setValue } = useForm<VacationsModel>();
+  let [source, setSource] = useState<string>();
+  let { register, handleSubmit, setValue, watch } = useForm<VacationsModel>();
   let navigate = useNavigate();
   let params = useParams();
   let id = Number(params.vacationId);
+  let image = watch("image");
+
+  useEffect( () => {
+    if(image && (image as unknown as FileList).length > 0) {
+      console.log(image);
+      let url = URL.createObjectURL((image as unknown as FileList)[0]);
+      setSource(url);
+    }
+  }, [image]);
 
   useEffect(() => {
     dataService
       .getOneVacation(id)
       .then((v) => {
-        setVacation(v);
+        setSource(v.imageUrl);
         setValue("destination", v.destination);
         setValue("description", v.description);
         setValue(
@@ -59,8 +68,7 @@ function UpdateVacation(): JSX.Element {
           />
           <div className="description-div">
           <label>Description: </label>
-          <input
-            type="textarea"
+          <textarea
             {...register("description")}
             minLength={2}
             maxLength={1000}
@@ -86,8 +94,8 @@ function UpdateVacation(): JSX.Element {
               required
             />
             <div className="file-preview">
-              <img id="previewImage" src={"#"} alt="Preview" />
-              <p>Select an image</p>
+              <img id="previewImage" src={source} alt="Preview" />
+              {!source && <p>Select an image</p>}
             </div>
           </label>
           <button>Submit</button>

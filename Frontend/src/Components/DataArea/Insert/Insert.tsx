@@ -4,12 +4,21 @@ import VacationsModel from "../../../Models/VacationsModel";
 import notifyService from "../../../Services/NotifyService";
 import dataService from "../../../Services/DataService";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Insert(): JSX.Element {
-  let { register, handleSubmit } = useForm<VacationsModel>();
-    let [image, setImage] = useState(null);
+  let [source, setSource] = useState<string>();
+  let { register, handleSubmit, watch } = useForm<VacationsModel>();
   let navigate = useNavigate();
+  let image = watch("image");
+
+  useEffect( () => {
+    if(image) {
+      let url = URL.createObjectURL((image as unknown as FileList)[0]);
+      setSource(url);
+    }
+
+  }, [image]);
 
   async function send(vacation: VacationsModel) {
     try {
@@ -60,8 +69,7 @@ function Insert(): JSX.Element {
           <label htmlFor="fileInput" className="file-label">Image:
           <input id="fileInput" className="fileInput" type="file" accept="image/*" {...register("image")} required />
           <div className="file-preview">
-            <img id="previewImage" src="#" alt="Preview"/>
-            <p>Select an image</p>
+            {source ? <img id="previewImage" src={source} alt="Preview"/> : <p>Select an image</p>}
           </div>
           </label>
           

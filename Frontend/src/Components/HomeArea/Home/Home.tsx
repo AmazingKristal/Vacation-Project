@@ -200,7 +200,7 @@ function Home(): JSX.Element {
       )}
       </div>
 
-      {(user?.role === 1 || user?.role === 2) && <div className="page-div">
+      {(user?.role === 1 || user?.role === 2) && (<div className="page-div">
         <button className="btn btn-outline-primary"
           disabled={currentPage === 1}
           onClick={() => handlePageChange(currentPage - 1)}
@@ -224,7 +224,7 @@ function Home(): JSX.Element {
         >
           Next
         </button>
-      </div>}
+      </div>)}
     </div>
   );
 }

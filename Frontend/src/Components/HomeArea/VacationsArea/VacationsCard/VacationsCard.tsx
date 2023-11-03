@@ -8,7 +8,8 @@ import followersService from "../../../../Services/FollowersService";
 import FollowersModel from "../../../../Models/FollowersModel";
 import notifyService from "../../../../Services/NotifyService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart as filledHeart } from '@fortawesome/free-solid-svg-icons';
+import { faHeart } from '@fortawesome/free-regular-svg-icons';
 
 interface VacationsCardProps {
 	vacation: VacationsModel;
@@ -55,12 +56,14 @@ function VacationsCard(props: VacationsCardProps): JSX.Element {
                 follower = {... follower, userId: user.userId, vacationId: props.vacation.vacationId};
                 await followersService.addFollowers(follower);
                 setFollowers([... followers, follower]);
+                setShowHearts(true);
             }
             else {
                 // Delete the user from the follow list
                 await followersService.deleteFollower(user.userId, props.vacation.vacationId);
                 setFollowers(followers.filter(f => !(f.userId === user.userId 
                     && f.vacationId === props.vacation.vacationId)));
+                    setShowHearts(false);
 
             }
         
@@ -74,8 +77,9 @@ function VacationsCard(props: VacationsCardProps): JSX.Element {
                 {user?.role === 1 && <button onClick={updateMe} className="update-button">Update</button>}
                 {user?.role === 2 &&
                     <button onClick={followMe} className="follow-button">
-                <FontAwesomeIcon icon={faHeart} className="heart-icon" />
-                <span className="followers-count">{followers?.length}</span>
+                {showHearts ? <FontAwesomeIcon icon={filledHeart} bounce className="heart-icon"/> : 
+                <FontAwesomeIcon icon={faHeart} bounce className="heart-icon"/>}
+                <span className="followers-count">Followed {followers?.length}</span>
                 </button>
                 }
             </div>

@@ -30,6 +30,7 @@ function List(): JSX.Element {
     }, []);
 
 
+    // Calculate the number of followers for each vacation.
     let followersNumber = [];
     for(const v of vacations) {
         let count = 0;
