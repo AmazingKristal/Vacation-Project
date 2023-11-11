@@ -16,7 +16,7 @@ async function register(user: UserModel): Promise<string> {
     user.role = RoleModel.User;
 
     // Is username taken:
-    if(await isUsernameTaken(user.email)) throw new ValidationError(`Email ${user.email} already taken.`);
+    if(await isUsernameTaken(user.email)) throw new ValidationError(`Email already taken.`);
 
     // SQL:
     user.password = cyber.hashPassword(user.password);
@@ -41,12 +41,12 @@ async function login(credentials: CredentialsModel): Promise<string> {
     // Validation:
     credentials.validate();
 
-    // credentials.password = cyber.hashPassword(credentials.password);
+    credentials.password = cyber.hashPassword(credentials.password);
 
     // SQL:
     const sql = `SELECT * FROM user WHERE 
-                 email = ? AND 
-                 password = ?`;
+                email = ? AND 
+                password = ?`;
 
     // Execute: 
     const users = await dal.execute(sql, [credentials.email, credentials.password]);

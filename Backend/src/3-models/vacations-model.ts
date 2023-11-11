@@ -29,7 +29,7 @@ class VacationModel {
         description: Joi.string().required().min(2).max(300),
         startDate: Joi.date().required(),
         endDate: Joi.date().required(),
-        price: Joi.number().required().min(0).max(2000).positive(),
+        price: Joi.number().required().min(0).max(10000).positive(),
         imageUrl: Joi.string().optional().min(40).max(100),
         image: Joi.object().optional(),
     });

@@ -8,16 +8,26 @@ import { useEffect, useState } from "react";
 
 function Insert(): JSX.Element {
   let [source, setSource] = useState<string>();
-  let { register, handleSubmit, watch } = useForm<VacationsModel>();
+  let [handleDisable, setHandleDisable] = useState<boolean>(true);
+  let [minStartDate, setMinStartDate] = useState("");
+  let { register, handleSubmit, watch, setValue } = useForm<VacationsModel>();
   let navigate = useNavigate();
   let image = watch("image");
+  let startingDate = watch("startDate");
+
+  useEffect(() => {
+    if(startingDate) {
+      setValue("endDate", startingDate);
+      setHandleDisable(false);
+      setMinStartDate(startingDate);
+    }
+  }, [startingDate]);
 
   useEffect( () => {
-    if(image) {
+    if(image && (image as unknown as FileList).length > 0) {
       let url = URL.createObjectURL((image as unknown as FileList)[0]);
       setSource(url);
     }
-
   }, [image]);
 
   async function send(vacation: VacationsModel) {
@@ -57,14 +67,14 @@ function Insert(): JSX.Element {
           <label>Starting date: </label>
           <input type="date" {...register("startDate")} required />
           <label>Ending date: </label>
-          <input type="date" {...register("endDate")} required />
+          <input type="date" {...register("endDate", {disabled: handleDisable})} required min={minStartDate}/>
           <label>Price: </label>
           <input
             type="number"
             {...register("price")}
             required
             min={0}
-            max={2000}
+            max={10000}
           />
           <label htmlFor="fileInput" className="file-label">Image:
           <input id="fileInput" className="fileInput" type="file" accept="image/*" {...register("image")} required />

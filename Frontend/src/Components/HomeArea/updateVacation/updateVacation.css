@@ -64,7 +64,7 @@ textarea {
 }
 
 .fileInput {
-    display: none;
+    opacity: 0;
 }
 
 .file-preview {

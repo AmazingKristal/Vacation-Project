@@ -9,11 +9,19 @@ import { useEffect, useState } from "react";
 
 function UpdateVacation(): JSX.Element {
   let [source, setSource] = useState<string>();
+  let [minStartDate, setMinStartDate] = useState("");
   let { register, handleSubmit, setValue, watch } = useForm<VacationsModel>();
   let navigate = useNavigate();
   let params = useParams();
   let id = Number(params.vacationId);
   let image = watch("image");
+  let startingDate = watch("startDate");
+
+  useEffect(() => {
+    if(startingDate) {
+      setMinStartDate(new Date(startingDate).toISOString().substring(0, new Date(startingDate).toISOString().indexOf("T")));
+    }
+  }, [startingDate]);
 
   useEffect( () => {
     if(image && (image as unknown as FileList).length > 0) {
@@ -80,9 +88,9 @@ function UpdateVacation(): JSX.Element {
             {...register("startDate", { valueAsDate: true })}
           />
           <label>Ending date: </label>
-          <input type="date" {...register("endDate", { valueAsDate: true })} />
+          <input type="date" {...register("endDate", { valueAsDate: true })} min={minStartDate}/>
           <label>Price: </label>
-          <input type="number" {...register("price")} min={0} max={2000} />
+          <input type="number" {...register("price")} min={0} max={10000} />
           <label htmlFor="fileInput" className="file-label">
             Image:
             <input
@@ -91,7 +99,6 @@ function UpdateVacation(): JSX.Element {
               type="file"
               accept="image/*"
               {...register("image")}
-              required
             />
             <div className="file-preview">
               <img id="previewImage" src={source} alt="Preview" />

@@ -7,6 +7,7 @@ import VacationsModel from "../../../Models/VacationsModel";
 import dataService from "../../../Services/DataService";
 import followersService from "../../../Services/FollowersService";
 import notifyService from "../../../Services/NotifyService";
+import { Button } from "@mui/base";
 
 Chart.register(CategoryScale);
 
@@ -15,6 +16,10 @@ function List(): JSX.Element {
     let [vacations, setVacations] = useState<VacationsModel[]>([]);
     let [followers, setFollowers] = useState<FollowersModel[]>([]);
 
+    
+      let fileData = "destination,followers\r\n" + vacations.map(v => v.destination + "," + followers.filter(f => f.vacationId === v.vacationId).length).join("\r\n");
+      const blob = new Blob([fileData], { type: "text/csv" });
+      const url = URL.createObjectURL(blob);
 
     useEffect(() => {
         dataService
@@ -35,13 +40,13 @@ function List(): JSX.Element {
     for(const v of vacations) {
         let count = 0;
         for(const f of followers) {
-           if(f.vacationId === v.vacationId) {
+          if(f.vacationId === v.vacationId) {
             count++;
-           }
+          }
         }
         followersNumber.push(count);
     }
- 
+
     const labels = vacations.map(v => v.destination);
   const data = {
     labels: labels,
@@ -78,7 +83,10 @@ function List(): JSX.Element {
   return (
     <div className="List">
       <h2>Our followers graph</h2>
+      <a href={url} download={"xd.csv"}>Download CSV</a>
+      <div className="graphDiv">
       <Bar data={data} options={options}/>
+      </div>
     </div>
   );
 }

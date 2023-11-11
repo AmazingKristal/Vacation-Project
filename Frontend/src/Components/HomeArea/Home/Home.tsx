@@ -10,6 +10,8 @@ import { NavLink } from "react-router-dom";
 import FollowersModel from "../../../Models/FollowersModel";
 import followersService from "../../../Services/FollowersService";
 import { FollowersStore } from "../../../Redux/FollowersState";
+import Pagination from '@mui/material/Pagination';
+import Stack from '@mui/material/Stack';
 
 function Home(): JSX.Element {
 
@@ -22,6 +24,7 @@ function Home(): JSX.Element {
   let [ongoingCheckbox, setOngoingCheckbox] = useState(false);
   let [deleteModal, setDeleteModal] = useState(false);
   let [specificVacId, setSpecificVacId] = useState(0);
+  let [page, setPage] = useState(1);
 
   useEffect(() => {
     dataService
@@ -72,10 +75,9 @@ function Home(): JSX.Element {
       setDidntStartCheckbox(false);
       setOngoingCheckbox(false);
       let filteredFollowers = followers.filter(f => f.userId === user.userId);
-      console.log(filteredFollowers);
-      console.log(followers);
       let followVac = vacations.filter(v => filteredFollowers.some(f => f.vacationId === v.vacationId))
       setFilteredVacations(followVac);
+      setPage(1);
     } else {
       setFollowCheckbox(false);
     }
@@ -88,6 +90,7 @@ function Home(): JSX.Element {
       setFollowCheckbox(false);
       setOngoingCheckbox(false);
       setFilteredVacations(vacations.filter((v) => v.startDate > now));
+      setPage(1);
     } else {
       setDidntStartCheckbox(false);
     }
@@ -102,29 +105,24 @@ function Home(): JSX.Element {
       setFilteredVacations(
         vacations.filter((v) => v.startDate <= now && v.endDate >= now)
       );
+      setPage(1);
     } else {
       setOngoingCheckbox(false);
     }
   }
 
-  const itemsPerPage = 9; // Number of items to display per page
-  const [currentPage, setCurrentPage] = useState(1);
+  function changePage(event: React.ChangeEvent<unknown>, value: number) {
+    setPage(value);
+  }
 
+  // with this we can use pagination as needed.
+  let itemsPerPage = 9;
+  let startIndex = (page - 1) * itemsPerPage;
+  let endIndex = startIndex + itemsPerPage;
 
-  // Calculate the range of items to display on the current page
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  let displayedArray = followCheckbox || didntStartCheckbox || ongoingCheckbox ? filteredVacations : vacations;
 
-  // Slice the vacations array to get the items for the current page
-  const displayedVacations = vacations.slice(startIndex, endIndex);
-
-  // Calculate the total number of pages
-  const totalPages = Math.ceil(vacations.length / itemsPerPage);
-
-  // Handle page change
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
-  };
+  let displayedVacations = displayedArray.slice(startIndex, endIndex);
 
   return (
     <div className="Home">
@@ -132,6 +130,7 @@ function Home(): JSX.Element {
 
 
       {(user?.role === 2) && <div className="checkbox-div">
+        <div className="checkbox-content">
 
       <div className="form-check form-switch">
       <input className="form-check-input" type="checkbox" role="switch" id="followCheckBox" checked={followCheckbox} onChange={showFollowedVac}></input>
@@ -147,7 +146,7 @@ function Home(): JSX.Element {
       <input className="form-check-input" type="checkbox" role="switch" id="onChangeCheckBox" checked={ongoingCheckbox} onChange={onGoing}></input>
       <label className="form-check-label" htmlFor="onChangeCheckBox">Show ongoing vacations</label>
       </div>
-
+      </div>
       </div>}
 
 
@@ -160,8 +159,21 @@ function Home(): JSX.Element {
 
         
         <div className="card-box">
+        {(user?.role === 1 || user?.role === 2) && (
+          (displayedVacations.length === 0 ? (
+            <span>No vacations found!</span>
+          ) : (
+            displayedVacations.map((v) => (
+              <VacationsCard
+                key={v.vacationId}
+                vacation={v}
+                delete={openModal}
+              ></VacationsCard>
+            ))
+          ))
+        )}
 
-      {(user?.role === 1 || user?.role === 2) && (followCheckbox || didntStartCheckbox || ongoingCheckbox ? 
+      {/* {(user?.role === 1 || user?.role === 2) && (followCheckbox || didntStartCheckbox || ongoingCheckbox ? 
       ((filteredVacations.length === 0) ? <span>No vacations found!</span> : filteredVacations.map((v) => (
         <VacationsCard
           key={v.vacationId}
@@ -170,14 +182,14 @@ function Home(): JSX.Element {
         ></VacationsCard>
         )))
         : 
-        displayedVacations.map((v) => (
+        vacations.map((v) => (
           <VacationsCard
             key={v.vacationId}
             vacation={v}
             delete={openModal}
           ></VacationsCard>
         ))
-      )}
+      )} */}
 
       {deleteModal && (
         <div className="modal" tabIndex={-1} role="dialog" style={{display: "block"}}>
@@ -199,32 +211,11 @@ function Home(): JSX.Element {
       </div>
       )}
       </div>
-
-      {(user?.role === 1 || user?.role === 2) && (<div className="page-div">
-        <button className="btn btn-outline-primary"
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          Previous
-        </button>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            className="btn btn-outline-primary"
-            key={index}
-            onClick={() => handlePageChange(index + 1)}
-            disabled={currentPage === index + 1}
-          >
-            {index + 1}
-          </button>
-        ))}
-        <button
-          className="btn btn-outline-primary"
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          Next
-        </button>
-      </div>)}
+      {(user?.role === 1 || user?.role === 2) && <div className="page-div">
+      <Stack spacing={2}>
+      <Pagination count={Math.ceil(displayedArray.length / itemsPerPage)} page={page} onChange={changePage} color="primary" />
+    </Stack>
+    </div>}
     </div>
   );
 }

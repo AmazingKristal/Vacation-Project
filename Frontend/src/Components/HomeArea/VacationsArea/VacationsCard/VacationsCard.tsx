@@ -9,7 +9,7 @@ import FollowersModel from "../../../../Models/FollowersModel";
 import notifyService from "../../../../Services/NotifyService";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHeart as filledHeart } from '@fortawesome/free-solid-svg-icons';
-import { faHeart } from '@fortawesome/free-regular-svg-icons';
+import { faHeart, faPenToSquare, faTrashCan } from '@fortawesome/free-regular-svg-icons';
 
 interface VacationsCardProps {
 	vacation: VacationsModel;
@@ -21,11 +21,15 @@ function VacationsCard(props: VacationsCardProps): JSX.Element {
     let [user, setUser] = useState<UserModel>();
     let [followers, setFollowers] = useState<FollowersModel[]>();
     let [showHearts, setShowHearts] = useState(false);
+    let [finishedLoading, setFinishedLoading] = useState(false);
     let navigate =  useNavigate();
 
     useEffect(() => {
         followersService.getFollowersByVacation(props.vacation.vacationId)
-        .then(f => setFollowers(f))
+        .then(f => {
+            setFollowers(f);
+            setFinishedLoading(true);
+        })
         .catch(err  => notifyService.error(err));
     }, []);
 
@@ -34,6 +38,17 @@ function VacationsCard(props: VacationsCardProps): JSX.Element {
         let unsubscribe = authStore.subscribe(() => setUser(authStore.getState().user));
         return unsubscribe;
     }, []);
+
+    useEffect(() => {
+        let amIFollowing = followers?.findIndex(f => f.userId === user.userId 
+            && f.vacationId === props.vacation.vacationId);
+        if(amIFollowing >= 0) {
+            setShowHearts(true);
+        }
+            else {
+                setShowHearts(false);
+            }
+    }, [finishedLoading]);
 
     
 
@@ -64,21 +79,24 @@ function VacationsCard(props: VacationsCardProps): JSX.Element {
                 setFollowers(followers.filter(f => !(f.userId === user.userId 
                     && f.vacationId === props.vacation.vacationId)));
                     setShowHearts(false);
-
             }
-        
     }
 
     return (
         <div className="VacationsCard">
             <div className="card card-div">
             <div>
-                {user?.role === 1 && <button onClick={deleteMe} className="delete-button">Delete</button>}
-                {user?.role === 1 && <button onClick={updateMe} className="update-button">Update</button>}
+                {user?.role === 1 && <button onClick={deleteMe} className="delete-button">
+                <FontAwesomeIcon icon={faPenToSquare} />
+                Delete
+                </button>}
+                {user?.role === 1 && <button onClick={updateMe} className="update-button">
+                <FontAwesomeIcon icon={faTrashCan} />
+                Update</button>}
                 {user?.role === 2 &&
                     <button onClick={followMe} className="follow-button">
-                {showHearts ? <FontAwesomeIcon icon={filledHeart} bounce className="heart-icon"/> : 
-                <FontAwesomeIcon icon={faHeart} bounce className="heart-icon"/>}
+                {showHearts ? <FontAwesomeIcon icon={filledHeart} className="heart-icon"/> : 
+                <FontAwesomeIcon icon={faHeart} className="heart-icon"/>}
                 <span className="followers-count">Followed {followers?.length}</span>
                 </button>
                 }
@@ -92,7 +110,7 @@ function VacationsCard(props: VacationsCardProps): JSX.Element {
             <span>{props.vacation.description}</span>
             </div>
             <span className="date-span">{`${new Date(props.vacation.startDate).toLocaleDateString()} -
-             ${new Date(props.vacation.endDate).toLocaleDateString()}`}</span>
+            ${new Date(props.vacation.endDate).toLocaleDateString()}`}</span>
             <div className="button-div">
             <button className="price-button">{props.vacation.price}$</button>
             </div>
