@@ -24,10 +24,10 @@ function Menu(): JSX.Element {
               <NavLink to="/home" className="nav-link" aria-current="page">Home</NavLink>
             </li>
             {(user?.role === 1) &&  <li className="nav-item">
-            <NavLink to="/list" className="nav-link">List</NavLink>
+            <NavLink to="/list" className="nav-link">Statistics</NavLink>
             </li>}
             {(user?.role === 1) && <li className="nav-item">
-            <NavLink to="/insert" className="nav-link">Insert</NavLink>
+            <NavLink to="/insert" className="nav-link">Add Vacation</NavLink>
             </li>}
           </ul>
         </div>

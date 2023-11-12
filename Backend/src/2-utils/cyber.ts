@@ -25,8 +25,7 @@ function getNewToken(user: UserModel): string {
 
 // Verify legal token:
 function verifyToken(token: string): void {
-
-    console.log(token + ' here problem ');
+    
     if (!token) throw new UnauthorizedError("Can't Login please try again.");
 
     try {

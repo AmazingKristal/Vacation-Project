@@ -25,7 +25,6 @@ function UpdateVacation(): JSX.Element {
 
   useEffect( () => {
     if(image && (image as unknown as FileList).length > 0) {
-      console.log(image);
       let url = URL.createObjectURL((image as unknown as FileList)[0]);
       setSource(url);
     }
@@ -53,7 +52,6 @@ function UpdateVacation(): JSX.Element {
       vacation.vacationId = id;
       // Convert the files list to have only a single file type:
       vacation.image = (vacation.image as unknown as FileList)[0];
-      console.log(vacation);
       await dataService.updateVacation(vacation);
       notifyService.success("Vacation has been added successfully !");
       navigate("/home");

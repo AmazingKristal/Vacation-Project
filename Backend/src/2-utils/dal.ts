@@ -1,7 +1,7 @@
 import mysql from "mysql";
 import appConfig from "./app-config";
 
-// Create a connection to MySQL's northwind database:
+// Create a connection to MySQL's database:
 const connection = mysql.createPool({
     host: appConfig.mySqlHost,
     user: appConfig.mySqlUser,
